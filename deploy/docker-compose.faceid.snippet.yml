@@ -1,0 +1,25 @@
+# Đoạn cần THÊM vào services: trong /home/ubuntu/cropguard/docker-compose.yml hiện có
+# (không phải file độc lập chạy riêng — ghép vào compose đang chạy cropguard + weather_server
+# để cùng network, cropguard_nginx gọi sang được qua tên service "faceid").
+#
+# Nhớ: sau khi sửa xong, dùng `docker compose up -d` (không phải chỉnh tay container đang chạy),
+# và nếu có sửa nginx.conf thì phải `docker restart cropguard_nginx` — file đó là bind-mount
+# file đơn lẻ read-only, `reload` không nhận file mới (xem ghi chú "cropnlu-server-tls").
+
+services:
+  faceid:
+    build:
+      context: /home/ubuntu/faceid-service   # thư mục chứa code FaceID (app/, models/, deploy/) đã copy lên VPS
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - /home/ubuntu/faceid-service/.env      # copy riêng, ĐỔI FACEID_API_KEY khác bản dev
+    volumes:
+      - faceid_insightface_cache:/root/.insightface   # để không tải lại model 280MB mỗi lần dựng
+    expose:
+      - "8001"     # không publish ports ra host — chỉ cropguard_nginx gọi vào qua network nội bộ
+    networks:
+      - default    # dùng đúng network mà cropguard_nginx và các service khác đang chung
+
+volumes:
+  faceid_insightface_cache:

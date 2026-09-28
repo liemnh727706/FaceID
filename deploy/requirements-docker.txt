@@ -1,0 +1,24 @@
+# Bản requirements cho Docker/Linux, khác bản Windows (requirements.txt) ở chỗ:
+# - Bỏ opencv-python và opencv-python-headless: cài cùng lúc cả ba gói opencv gây xung đột
+#   module cv2 (cái sau ghi đè cái trước). Chỉ giữ opencv-contrib-python-headless vì
+#   qr_engine.py cần cv2.wechat_qrcode và cv2.aruco (chỉ có trong bản "contrib"), và server
+#   không có màn hình nên cần bản "headless" (không phụ thuộc thư viện GUI/X11).
+# - Không cần dòng chú thích wheel Windows của insightface: trên Linux, pip lấy thẳng wheel
+#   manylinux chính thức từ PyPI.
+fastapi>=0.111
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
+python-dotenv>=1.0
+
+insightface==0.7.3
+numpy==1.26.4
+onnxruntime>=1.19
+opencv-contrib-python-headless==4.10.0.84
+scipy==1.13.1
+scikit-image==0.24.0
+tifffile==2024.8.30
+pillow>=10.0
+
+paddlepaddle>=3.0
+paddleocr>=3.2
+pyzbar>=0.1.9

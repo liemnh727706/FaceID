@@ -1,0 +1,23 @@
+fastapi>=0.111
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
+python-dotenv>=1.0
+
+# insightface: tren Windows/Python 3.12 khong co wheel chinh thuc — cai wheel dung san
+# (compile voi numpy 1.x, nen toan bo nhom duoi phai pin ban tuong thich numpy<2):
+# pip install https://github.com/Gourieff/Assets/raw/main/Insightface/insightface-0.7.3-cp312-cp312-win_amd64.whl
+insightface==0.7.3
+numpy==1.26.4
+onnxruntime>=1.19
+opencv-python-headless==4.10.0.84
+opencv-python==4.10.0.84
+opencv-contrib-python==4.10.0.84
+scipy==1.13.1
+scikit-image==0.24.0
+tifffile==2024.8.30
+matplotlib==3.9.4
+pillow>=10.0
+
+paddlepaddle>=3.0
+paddleocr>=3.2
+pyzbar>=0.1.9

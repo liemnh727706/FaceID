@@ -1,0 +1,8 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+faceid-deploy.tar.gz
+
+# Ảnh test cá nhân (có khuôn mặt thật) - không đưa lên repo công khai
+test_*.jpg
