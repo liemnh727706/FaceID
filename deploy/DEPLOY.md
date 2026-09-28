@@ -1,5 +1,15 @@
 # Triển khai FaceID service lên `cropnlu.duckdns.org`
 
+## Ghi chú quan trọng: VPS là ARM64 (aarch64)
+
+PaddlePaddle không có wheel ARM64 chính thức trên PyPI (build nguồn mất hàng giờ, wheel bên thứ
+ba không đủ tin cậy để đưa vào production). Vì `app/main.py` chỉ import `paddleocr` một cách lười
+bên trong route `/ocr/student-card` và tự trả 503 khi `FACEID_OCR_ENABLED=0`, bản deploy server
+này **tắt hẳn OCR thẻ sinh viên**, chỉ chạy `/face/detect`, `/face/verify`, `/face/embed`,
+`/face/identify`, `/qr/decode`. Đây là những endpoint app Android đang dùng.
+`insightface` cũng không có wheel ARM64 sẵn, phải build từ mã nguồn — Dockerfile đã cài
+`build-essential`/`python3-dev` để làm việc này (mất thêm vài chục giây khi build image).
+
 VPS: `ubuntu@instance-20260625-1050` (161.118.254.111), compose dir `/home/ubuntu/cropguard`.
 4 vCPU, 23GB RAM (đã kiểm tra 2026-09-28, còn dư nhiều) — đủ chạy thêm InsightFace + PaddleOCR
 cạnh cropguard/weather_server hiện có.
@@ -36,7 +46,7 @@ FACEID_PORT=8001
 FACEID_MATCH_THRESHOLD=0.32
 FACEID_REJECT_THRESHOLD=0.20
 FACEID_MIN_FACE_SIZE=60
-FACEID_OCR_ENABLED=1
+FACEID_OCR_ENABLED=0
 EOF
 chmod 600 /home/ubuntu/faceid-service/.env
 ```

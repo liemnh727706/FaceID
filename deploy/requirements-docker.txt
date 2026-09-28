@@ -4,7 +4,13 @@
 #   qr_engine.py cần cv2.wechat_qrcode và cv2.aruco (chỉ có trong bản "contrib"), và server
 #   không có màn hình nên cần bản "headless" (không phụ thuộc thư viện GUI/X11).
 # - Không cần dòng chú thích wheel Windows của insightface: trên Linux, pip lấy thẳng wheel
-#   manylinux chính thức từ PyPI.
+#   (hoặc build từ nguồn trên ARM64, xem Dockerfile) từ PyPI.
+# - KHÔNG cài paddlepaddle/paddleocr: PaddlePaddle không có wheel ARM64 chính thức trên PyPI,
+#   build từ mã nguồn mất hàng giờ, và bên thứ ba cung cấp wheel dựng sẵn thì không đủ tin cậy để
+#   dùng trong image production. app/main.py chỉ import paddleocr một cách "lười" (bên trong
+#   route /ocr/student-card) và tự chặn 503 khi FACEID_OCR_ENABLED=0 (đặt trong .env), nên bỏ
+#   qua paddlepaddle hoàn toàn không ảnh hưởng /face/verify, /face/detect, /face/embed,
+#   /face/identify, /qr/decode. Chỉ /ocr/student-card sẽ trả 503 trên bản deploy này.
 fastapi>=0.111
 uvicorn[standard]>=0.30
 python-multipart>=0.0.9
@@ -19,6 +25,4 @@ scikit-image==0.24.0
 tifffile==2024.8.30
 pillow>=10.0
 
-paddlepaddle>=3.0
-paddleocr>=3.2
 pyzbar>=0.1.9

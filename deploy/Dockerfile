@@ -2,11 +2,14 @@
 #   docker build -f deploy/Dockerfile -t faceid-service .
 FROM python:3.12-slim
 
-# Thư viện hệ thống opencv/paddle cần khi chạy trên Linux không có sẵn X11/GL:
+# Thư viện hệ thống cần khi chạy trên Linux không có sẵn X11/GL:
 #   libgl1, libglib2.0-0: opencv (kể cả bản headless vẫn link tới libGL ở một số bản build)
-#   libgomp1: OpenMP runtime cho onnxruntime/paddlepaddle
+#   libgomp1: OpenMP runtime cho onnxruntime
+#   build-essential, python3-dev: PyPI không có wheel insightface dựng sẵn cho ARM64/aarch64,
+#     pip phải tự biên dịch phần mở rộng C++ (mesh_core_cython) từ mã nguồn khi cài trên VPS ARM64.
+#   libzbar0: thư viện hệ thống mà pyzbar (fallback giải mã QR tầng 2) cần qua ctypes.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        libgl1 libglib2.0-0 libgomp1 \
+        libgl1 libglib2.0-0 libgomp1 build-essential python3-dev libzbar0 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /srv/faceid
