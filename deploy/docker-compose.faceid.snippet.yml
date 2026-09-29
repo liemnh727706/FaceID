@@ -20,6 +20,13 @@ services:
       - "8001"     # không publish ports ra host — chỉ cropguard_nginx gọi vào qua network nội bộ
     networks:
       - default    # dùng đúng network mà cropguard_nginx và các service khác đang chung
+    # Giới hạn tài nguyên: InsightFace suy luận CPU nặng, không giới hạn thì một request dồn dập
+    # có thể chiếm hết 4 vCPU của VPS, ảnh hưởng cropguard/thoitiet đang chạy chung máy.
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 3g
 
 volumes:
   faceid_insightface_cache:
